@@ -1,6 +1,7 @@
 const userService = require('../../services/userService');
 const { showWelcome } = require('../flows/welcome');
 const { showCatalog, showProduct } = require('../flows/catalog');
+const purchaseFlow = require('../flows/purchase');
 
 const PENDING = {
   'nav:profile':   'Módulo 6 (Meu Perfil)',
@@ -31,8 +32,7 @@ module.exports = (bot) => {
 
     if (data.startsWith('cat:page:')) {
       await ctx.answerCbQuery().catch(() => {});
-      const raw = data.slice('cat:page:'.length);
-      const page = parseInt(raw, 10);
+      const page = parseInt(data.slice('cat:page:'.length), 10);
       if (!Number.isFinite(page)) return;
       return showCatalog(ctx, user, page);
     }
@@ -44,20 +44,63 @@ module.exports = (bot) => {
       return showProduct(ctx, user, id);
     }
 
-    if (data.startsWith('cat:buy:') || data.startsWith('cat:buy_multi:') || data.startsWith('cat:cart:')) {
+    if (data.startsWith('cat:buy:')) {
       await ctx.answerCbQuery().catch(() => {});
-      const action = data.startsWith('cat:buy_multi:')
-        ? 'Módulo 4 (Compra de várias unidades)'
-        : data.startsWith('cat:cart:')
-          ? 'Módulo 14 (Carrinho)'
-          : 'Módulo 4 (Compra individual)';
+      const id = parseInt(data.slice('cat:buy:'.length), 10);
+      if (!Number.isFinite(id)) return;
+      return purchaseFlow.startPurchase(ctx, user, id);
+    }
+
+    if (data.startsWith('cat:buy_multi:')) {
+      await ctx.answerCbQuery().catch(() => {});
       try {
         await ctx.editMessageText(
-          `🚧 Este fluxo será entregue em <b>${action}</b>.\nUse /cancelar para voltar.`,
+          '🚧 Este fluxo será entregue em <b>Módulo 4 (Compra de várias unidades)</b>.\nUse /cancelar para voltar.',
           { parse_mode: 'HTML' }
         );
       } catch {}
       return;
+    }
+
+    if (data.startsWith('cat:cart:')) {
+      await ctx.answerCbQuery().catch(() => {});
+      try {
+        await ctx.editMessageText(
+          '🚧 Este fluxo será entregue em <b>Módulo 14 (Carrinho)</b>.\nUse /cancelar para voltar.',
+          { parse_mode: 'HTML' }
+        );
+      } catch {}
+      return;
+    }
+
+    if (data.startsWith('p:genpix:')) {
+      const rest = data.slice('p:genpix:'.length);
+      const [pidStr, qStr] = rest.split(':');
+      const pid = parseInt(pidStr, 10);
+      const q = parseInt(qStr, 10) || 1;
+      if (!Number.isFinite(pid)) return;
+      await ctx.answerCbQuery().catch(() => {});
+      return purchaseFlow.generatePix(ctx, user, pid, q);
+    }
+
+    if (data.startsWith('p:check:')) {
+      const pid = parseInt(data.slice('p:check:'.length), 10);
+      if (!Number.isFinite(pid)) return;
+      return purchaseFlow.checkPix(ctx, pid);
+    }
+
+    if (data.startsWith('p:cred:')) {
+      const rest = data.slice('p:cred:'.length);
+      const [purchaseStr, mode] = rest.split(':');
+      const purchaseId = parseInt(purchaseStr, 10);
+      if (!Number.isFinite(purchaseId)) return;
+      return purchaseFlow.toggleCredentials(ctx, purchaseId, mode === 'show');
+    }
+
+    if (data.startsWith('p:newpix:')) {
+      const pid = parseInt(data.slice('p:newpix:'.length), 10);
+      if (!Number.isFinite(pid)) return;
+      return purchaseFlow.regeneratePix(ctx, pid);
     }
 
     if (PENDING[data]) {
