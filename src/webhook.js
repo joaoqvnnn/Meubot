@@ -3,8 +3,8 @@ const env = require('./config/env');
 const paymentService = require('./services/paymentService');
 const purchaseService = require('./services/purchaseService');
 const userService = require('./services/userService');
-const { renderApproved } = require('./bot/flows/purchase');
 const { query } = require('./database/connection');
+const delivery = require('./bot/flows/delivery');
 
 function createWebhook(bot) {
   const app = express();
@@ -47,13 +47,11 @@ function createWebhook(bot) {
             from: { id: refreshed.user_id },
             answerCbQuery: () => Promise.resolve(),
             editMessageText: (text, extra) =>
-              bot.telegram.editMessageText(
-                purchase.pix_chat_id, purchase.pix_message_id, undefined, text, extra
-              ),
+              bot.telegram.editMessageText(purchase.pix_chat_id, purchase.pix_message_id, undefined, text, extra),
           };
           const user = await userService.getByTelegram(refreshed.user_id);
           try {
-            await renderApproved(fakeCtx, user, {
+            await delivery.startDelivery(fakeCtx, user, {
               purchaseId: refreshed.purchase_id,
               balanceBefore: resApprove.balanceBefore,
               balanceAfter: resApprove.balanceAfter,
@@ -61,7 +59,7 @@ function createWebhook(bot) {
               balanceUsed: resApprove.balanceUsed,
             }, 'pix');
           } catch (err) {
-            console.error('[webhook] edit', err.message);
+            console.error('[webhook] delivery', err.message);
           }
         }
       }
