@@ -140,3 +140,36 @@ INSERT INTO settings (key, value) VALUES
   ('gift_code_example', 'ABC123XYZ456'),
   ('gift_code_length', '12')
 ON CONFLICT (key) DO NOTHING;
+
+(adicionar/atualizar rotas de perfil)
+const profile = require('../flows/profile');
+const giftCard = require('../flows/giftCard');
+
+// dentro do handler:
+
+if (data === 'nav:profile') {
+  await ctx.answerCbQuery().catch(() => {});
+  return profile.showProfile(ctx, user);
+}
+
+if (data.startsWith('prof:history:')) {
+  const parts = data.slice('prof:history:'.length).split(':');
+  const page = parseInt(parts[0], 10) || 0;
+  const filter = parts[1] || 'all';
+  return profile.showHistory(ctx, user, page, filter);
+}
+
+if (data === 'prof:gift') {
+  return giftCard.askGift(ctx, user);
+}
+
+if (data === 'prof:change') {
+  await ctx.answerCbQuery().catch(() => {});
+  try {
+    await ctx.editMessageText(
+      '🚧 Este fluxo será entregue em <b>Módulo 6 (Alterar Dados)</b>.\nUse /cancelar para voltar.',
+      { parse_mode: 'HTML' }
+    );
+  } catch {}
+  return;
+}
