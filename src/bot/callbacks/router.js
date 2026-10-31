@@ -2,13 +2,14 @@ const userService = require('../../services/userService');
 const { showWelcome } = require('../flows/welcome');
 const { showCatalog, showProduct } = require('../flows/catalog');
 const purchaseFlow = require('../flows/purchase');
+const profile = require('../flows/profile');
+const giftCard = require('../flows/giftCard');
 
 const PENDING = {
-  'nav:profile':   'Módulo 6 (Meu Perfil)',
-  'nav:recharge':  'Módulo 8 (Recarregar Saldo)',
-  'nav:affiliate': 'Módulo 9 (Afiliados)',
-  'nav:rankings':  'Módulo 12 (Rankings)',
-  'nav:cart':      'Módulo 14 (Carrinho)',
+  'nav:recharge':  'Módulo 7 (Recarregar Saldo)',
+  'nav:affiliate': 'Módulo 8 (Afiliados)',
+  'nav:rankings':  'Módulo 10 (Rankings)',
+  'nav:cart':      'Módulo 12 (Carrinho)',
 };
 
 module.exports = (bot) => {
@@ -66,7 +67,7 @@ module.exports = (bot) => {
       await ctx.answerCbQuery().catch(() => {});
       try {
         await ctx.editMessageText(
-          '🚧 Este fluxo será entregue em <b>Módulo 14 (Carrinho)</b>.\nUse /cancelar para voltar.',
+          '🚧 Este fluxo será entregue em <b>Módulo 12 (Carrinho)</b>.\nUse /cancelar para voltar.',
           { parse_mode: 'HTML' }
         );
       } catch {}
@@ -103,6 +104,33 @@ module.exports = (bot) => {
       return purchaseFlow.regeneratePix(ctx, pid);
     }
 
+    if (data === 'nav:profile') {
+      await ctx.answerCbQuery().catch(() => {});
+      return profile.showProfile(ctx, user);
+    }
+
+    if (data.startsWith('prof:history:')) {
+      const parts = data.slice('prof:history:'.length).split(':');
+      const page = parseInt(parts[0], 10) || 0;
+      const filter = parts[1] || 'all';
+      return profile.showHistory(ctx, user, page, filter);
+    }
+
+    if (data === 'prof:gift') {
+      return giftCard.askGift(ctx, user);
+    }
+
+    if (data === 'prof:change') {
+      await ctx.answerCbQuery().catch(() => {});
+      try {
+        await ctx.editMessageText(
+          '🚧 Este fluxo será entregue em <b>Módulo 6 (Alterar Dados)</b>.\nUse /cancelar para voltar.',
+          { parse_mode: 'HTML' }
+        );
+      } catch {}
+      return;
+    }
+
     if (PENDING[data]) {
       await ctx.answerCbQuery().catch(() => {});
       try {
@@ -117,59 +145,3 @@ module.exports = (bot) => {
     await ctx.answerCbQuery().catch(() => {});
   });
 };
-(adicionar as rotas)
-CREATE TABLE IF NOT EXISTS gift_cards (
-  id BIGSERIAL PRIMARY KEY,
-  code TEXT UNIQUE NOT NULL,
-  value NUMERIC(12,2) NOT NULL,
-  active BOOLEAN NOT NULL DEFAULT TRUE,
-  used_by BIGINT,
-  used_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_gift_cards_used_by ON gift_cards (used_by);
-
-CREATE TABLE IF NOT EXISTS gift_card_products (
-  gift_card_id BIGINT NOT NULL REFERENCES gift_cards(id) ON DELETE CASCADE,
-  product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-  PRIMARY KEY (gift_card_id, product_id)
-);
-
-INSERT INTO settings (key, value) VALUES
-  ('gift_code_example', 'ABC123XYZ456'),
-  ('gift_code_length', '12')
-ON CONFLICT (key) DO NOTHING;
-
-(adicionar/atualizar rotas de perfil)
-const profile = require('../flows/profile');
-const giftCard = require('../flows/giftCard');
-
-// dentro do handler:
-
-if (data === 'nav:profile') {
-  await ctx.answerCbQuery().catch(() => {});
-  return profile.showProfile(ctx, user);
-}
-
-if (data.startsWith('prof:history:')) {
-  const parts = data.slice('prof:history:'.length).split(':');
-  const page = parseInt(parts[0], 10) || 0;
-  const filter = parts[1] || 'all';
-  return profile.showHistory(ctx, user, page, filter);
-}
-
-if (data === 'prof:gift') {
-  return giftCard.askGift(ctx, user);
-}
-
-if (data === 'prof:change') {
-  await ctx.answerCbQuery().catch(() => {});
-  try {
-    await ctx.editMessageText(
-      '🚧 Este fluxo será entregue em <b>Módulo 6 (Alterar Dados)</b>.\nUse /cancelar para voltar.',
-      { parse_mode: 'HTML' }
-    );
-  } catch {}
-  return;
-}
