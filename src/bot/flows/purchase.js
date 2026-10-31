@@ -300,7 +300,8 @@ async function checkPix(ctx, paymentId) {
         pixAmount: payment.amount,
       });
       const user = await userService.getByTelegram(payment.user_id);
-      return renderApproved(ctx, user, {
+      const delivery = require('./delivery');
+      return delivery.startDelivery(ctx, user, {
         purchaseId: payment.purchase_id,
         balanceBefore: res.balanceBefore,
         balanceAfter: res.balanceAfter,
@@ -319,9 +320,7 @@ async function checkPix(ctx, paymentId) {
   }
 
   const expired = await paymentService.expireIfNeeded(paymentId);
-  if (expired && expired.status === 'expired') {
-    return showExpired(ctx, expired);
-  }
+  if (expired && expired.status === 'expired') return showExpired(ctx, expired);
 
   return ctx.answerCbQuery('Pagamento ainda não identificado. Aguarde alguns segundos.').catch(() => {});
 }
