@@ -37,6 +37,48 @@ Clique no botão "🛍️ Comprar Produtos" abaixo para ver nosso catálogo e es
       [{ text: '🛍️ Carrinho', callback_data: 'nav:cart' }],
     ],
   },
+  {
+    key: 'catalog_header',
+    text:
+`📱 <b>CATÁLOGO DE SERVIÇOS</b>
+━━━━━━━━━━━━━━━━━━━
+
+💰 Saldo: R$ {{SALDO}}
+📦 Produtos disponíveis: {{TOTAL_PRODUTOS}}
+
+⬇️ Selecione um produto para ver os planos:`,
+    media_url: null,
+    buttons: [
+      [{ text: '◀️ Voltar', callback_data: 'nav:welcome' }],
+      [{ text: '◀️ Anterior', callback_data: 'cat:page:prev' }, { text: 'Próxima ▶️', callback_data: 'cat:page:next' }],
+    ],
+  },
+  {
+    key: 'product_detail',
+    text:
+`🚀 <b>{{NOME_PRODUTO}}</b>
+
+💰 Valor: R$ {{VALOR}}
+👛 Seu saldo: R$ {{CARTEIRA}}
+📦 Estoque: {{QUANTIDADE}} unidades
+
+📝 <b>Descrição:</b>
+{{DESCRICAO}}
+
+📊 <b>Informações:</b>
+├ {{VENDIDOS}} vendas
+└ {{ONLINE}} pessoas vendo agora
+
+🛡️ Garantia: {{DIAS}} dias
+✅ Compra segura - /termos`,
+    media_url: null,
+    buttons: [
+      [{ text: '🛒 Comprar', action: 'buy' }],
+      [{ text: '🛒 Comprar mais de um', action: 'buy_multi' }],
+      [{ text: '🛍️ Adicionar no carrinho', action: 'cart_add' }],
+      [{ text: '◀️ Voltar ao catálogo', action: 'back_catalog' }],
+    ],
+  },
 ];
 
 async function seed() {
