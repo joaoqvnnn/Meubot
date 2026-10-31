@@ -272,4 +272,115 @@ Ref: {{REF}}`,
     media_url: null,
     buttons: [],
   },
+  {
+    key: 'profile_panel',
+    text:
+`👤 <b>MEU PERFIL</b>
+
+🔍 Detalhes da sua conta:
+
+👤 <b>INFORMAÇÕES</b>
+🆔 ID da Carteira: {{ID_CARTEIRA}}
+💰 Saldo Atual: R$ {{SALDO}}
+📲 Seu WhatsApp: {{WHATSAPP}}
+
+─── 📊 <b>SUAS MOVIMENTAÇÕES</b>
+🛒 Compras Realizadas: {{QTD_COMPRAS}}
+💰 Total Gasto: R$ {{TOTAL_GASTO}}
+💠 Pix Inseridos: R$ {{PIX_INSERIDO}}
+🎁 Gifts Resgatados: {{GIFTS}}`,
+    media_url: null,
+    buttons: [
+      [{ text: '🛍 Histórico de Compras', callback_data: 'prof:history:0:all' }],
+      [{ text: '🎁 Resgatar Gift Card', callback_data: 'prof:gift' }],
+      [{ text: '✏️ Alterar Dados', callback_data: 'prof:change' }],
+      [{ text: '◀️ Voltar', callback_data: 'nav:welcome' }],
+    ],
+  },
+  {
+    key: 'profile_history',
+    text:
+`🛍 <b>HISTÓRICO</b> — Compra {{ATUAL}}/{{TOTAL}}
+
+⏰ Data: {{DATA_COMPRA}}
+📆 Vence: {{DATA_VENC}}
+💰 Valor: R$ {{VALOR}}
+🎫 ID: {{ID_COMPRA}}
+⚜️ Serviço: {{SERVICO}}
+📧 Email: {{EMAIL}}
+🔐 Senha: {{SENHA}}
+📃 Nota: {{NOTA}}
+
+Ref: {{REF}}`,
+    media_url: null,
+    buttons: [],
+  },
+  {
+    key: 'profile_no_purchases',
+    text:
+`Você não tem compras no bot.
+
+Quando comprar alguma conta, as informações dela ficarão exibidas aqui.`,
+    media_url: null,
+    buttons: [
+      [{ text: '🛍️ Ver Catálogo', callback_data: 'nav:catalog' }],
+      [{ text: '◀️ Voltar', callback_data: 'nav:profile' }],
+    ],
+  },
+  {
+    key: 'profile_no_active',
+    text:
+`Você não tem compras ativas (não vencidas) no bot.
+
+Use o botão abaixo para ver todas as compras.`,
+    media_url: null,
+    buttons: [
+      [{ text: '📋 Ver todas', callback_data: 'prof:history:0:all' }],
+      [{ text: '◀️ Voltar', callback_data: 'nav:profile' }],
+    ],
+  },
+  {
+    key: 'profile_gift_prompt',
+    text:
+`🎁 <b>RESGATAR GIFT CARD</b>
+
+Digite o código do seu gift card abaixo:
+
+Exemplo: {{EXEMPLO_GIFT}}
+
+💡 Dica: Código tem {{QTD_CHARS}} caracteres.
+
+✖️ /cancelar para voltar.`,
+    media_url: null,
+    buttons: [],
+  },
+  {
+    key: 'profile_gift_invalid',
+    text:
+`❌ <b>GIFT INVÁLIDO</b>
+
+O código <b>{{CODIGO}}</b> não existe ou já foi usado.
+
+🔍 Verifique se digitou certo e tente novamente.
+
+Exemplo correto: {{EXEMPLO_GIFT}}`,
+    media_url: null,
+    buttons: [],
+  },
+  {
+    key: 'profile_gift_success',
+    text:
+`✅ <b>GIFT RESGATADO COM SUCESSO!</b>
+
+🎁 Código: {{CODIGO_GIFT}}
+💰 Valor adicionado: R$ {{VALOR_GIFT}}
+
+💳 Seu novo saldo: R$ {{SALDO_ATUAL}}
+
+─── 📍 <b>ONDE USAR</b> ───
+
+Seu saldo já está na carteira e pode ser usado em:`,
+    media_url: null,
+    buttons: [],
+  },
 ];
