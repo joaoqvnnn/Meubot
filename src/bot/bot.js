@@ -10,6 +10,7 @@ function createBot() {
 
   require('./commands/start')(bot);
   require('./commands/cancelar')(bot);
+  require('./handlers/textState')(bot);
   require('./callbacks/router')(bot);
   require('./events/chatMember')(bot);
 
