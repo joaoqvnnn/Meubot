@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: larizinha-bot
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run migrate && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: larizinha-db
+          property: connectionString
+      - key: CHANNEL_ID
+        sync: false
+      - key: CHANNEL_LINK
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: larizinha-db
+    plan: free
