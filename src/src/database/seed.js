@@ -207,4 +207,69 @@ Deseja gerar um PIX de R$ {{FALTA}} para liberar na hora?`,
       [{ text: '◀️ Voltar ao menu', callback_data: 'nav:welcome' }],
     ],
   },
+  {
+    key: 'purchase_multi_approved',
+    text:
+`✅ <b>COMPRA APROVADA!</b>
+
+🛍 Pedido: #{{ORDER_SHORT}}
+💎 Serviço: {{PRODUTO}}
+📦 Quantidade: {{QTD}} unidades
+
+💰 Valor unitário: R$ {{VALOR_UN}}
+💵 Total pago: R$ {{VALOR_TOTAL}}
+💳 Saldo anterior: R$ {{SALDO_ANT}}
+💰 Saldo restante: R$ {{SALDO_ATUAL}}
+
+📅 Compra: {{DATA}}
+
+👇 <b>Suas contas estão liberadas!</b>`,
+    media_url: null,
+    buttons: [
+      [{ text: '▶️ Ver minhas contas', action: 'view_items' }],
+      [{ text: '◀️ Voltar ao catálogo', callback_data: 'nav:catalog' }],
+    ],
+  },
+  {
+    key: 'purchase_multi_approved_pix',
+    text:
+`✅ <b>COMPRA APROVADA!</b>
+
+🛍 Pedido: #{{ORDER_SHORT}}
+💎 Serviço: {{PRODUTO}}
+📦 Quantidade: {{QTD}} unidades
+
+💰 Valor unitário: R$ {{VALOR_UN}}
+💵 Total pago: R$ {{VALOR_TOTAL}}
+💳 Saldo utilizado: R$ {{SALDO_UTILIZADO}}
+⚡ PIX pago: R$ {{VALOR_PIX}}
+
+📅 Compra: {{DATA}}
+
+👇 <b>Suas contas estão liberadas!</b>`,
+    media_url: null,
+    buttons: [
+      [{ text: '▶️ Ver minhas contas', action: 'view_items' }],
+      [{ text: '◀️ Voltar ao catálogo', callback_data: 'nav:catalog' }],
+    ],
+  },
+  {
+    key: 'delivery_item',
+    text:
+`✅ <b>COMPRA LIBERADA!</b> [{{POS}}/{{TOTAL}}]
+
+🛍 Pedido: #{{ORDER_SHORT}}
+💎 Serviço: {{PRODUTO}}
+⏰ Compra: {{DATA}}
+📆 Válido até: {{VENC}}
+💰 Valor: R$ {{VALOR}}
+🎫 ID: {{ID}}
+
+📧 Email: {{EMAIL}}
+🔐 Senha: {{SENHA}}
+
+Ref: {{REF}}`,
+    media_url: null,
+    buttons: [],
+  },
 ];
