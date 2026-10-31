@@ -1,5 +1,6 @@
 const userService = require('../../services/userService');
 const buyMulti = require('../flows/buyMulti');
+const giftCard = require('../flows/giftCard');
 
 module.exports = (bot) => {
   bot.on('text', async (ctx, next) => {
@@ -7,8 +8,8 @@ module.exports = (bot) => {
     const user = await userService.getByTelegram(ctx.from.id);
     if (!user) return next();
 
-    const handled = await buyMulti.handleQuantity(ctx, user);
-    if (handled) return;
+    if (await buyMulti.handleQuantity(ctx, user)) return;
+    if (await giftCard.handleGiftCode(ctx, user)) return;
 
     return next();
   });
